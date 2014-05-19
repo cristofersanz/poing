@@ -23,6 +23,8 @@ public class Game extends BasicGame {
     private static final int J2_POS_X = 700;    // Fix: No hardcodear
     private static final int POS_Y = 200;   // Fix: No hardcodear
 
+    private static final boolean DEBUG = true;
+
     private Jugador jugador1;
     private Jugador jugador2;
     private Bola bola;
@@ -36,6 +38,11 @@ public class Game extends BasicGame {
         Pantalla.pintarJugador(g,jugador1);
         Pantalla.pintarJugador(g,jugador2);
         Pantalla.pintarBola(g,bola);
+
+        if (DEBUG){
+            g.drawString("X: " + bola.getPosX() + " || Y: " + bola.getPosY() + " || DIR: " +
+                bola.getDir(), 100,10);
+        }
     }
 
     @Override

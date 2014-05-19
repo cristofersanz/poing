@@ -21,7 +21,7 @@ public class Pantalla {
     }
 
     public static void pintarBola(Graphics g, Bola bola) {
-        g.drawOval(bola.getPosX(), bola.getPosY(), 10, 10);
+        g.drawOval(bola.getPosX(), bola.getPosY(), bola.getRadio(), bola.getRadio());
     }
 
     public static int getColumnas() {
