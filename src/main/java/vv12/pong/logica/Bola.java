@@ -6,6 +6,8 @@ import vv12.pong.logica.Pala;
 import java.util.Random;
 
 import static vv12.pong.utiles.Utiles.enRango;
+import static vv12.pong.utiles.Utiles.conf;
+
 
 /**
  *
@@ -13,9 +15,11 @@ import static vv12.pong.utiles.Utiles.enRango;
 public class Bola {
     public enum Direccion { ARDCHA, ABDCHA, ABIZDA, ARIZDA }
 
-    private static final int RADIO = 12;
-    private static final int VEL = 6;
-    private static final int MARGEN_EXTRA = 10;
+    private static final int WIDTH = Integer.valueOf(conf("pantalla.width"));
+    private static final int HEIGHT = Integer.valueOf(conf("pantalla.height"));
+    private static final int RADIO = Integer.valueOf(conf("bola.radio"));
+    private static final int VEL = Integer.valueOf(conf("bola.velocidad"));
+    private static final int MARGEN_EXTRA = Integer.valueOf(conf("pala.margen_extra"));
 
     private int posX;
     private int posY;
@@ -24,8 +28,8 @@ public class Bola {
 
     public Bola() {
         dir = Direccion.values()[new Random().nextInt(4)];
-        posX = Pantalla.getColumnas() / 2;
-        posY = Pantalla.getFilas() / 2;
+        posX = WIDTH / 2;
+        posY = HEIGHT / 2;
     }
 
     public int getRadio() {
@@ -101,7 +105,7 @@ public class Bola {
         if (!parada) {
             if (getPosYSup() <= 1) {
                 rebotaArriba();
-            } else if (getPosYInf() >= Pantalla.getFilas() - 1) {
+            } else if (getPosYInf() >= HEIGHT - 1) {
                 rebotaAbajo();
             }
 

@@ -8,24 +8,21 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Input;
 import vv12.pong.graficos.*;
 import vv12.pong.logica.*;
+import java.util.Properties;
+import static vv12.pong.utiles.Utiles.conf;
 
 /**
  * A game using Slick2d
  */
 public class Game extends BasicGame {
 
-    /** Screen width */
-    private static final int WIDTH = 800;
-    /** Screen height */
-    private static final int HEIGHT = 600;
-    
-    private static final int J1_POS_X = 50;    // Fix: No hardcodear
-    private static final int J2_POS_X = WIDTH - 60;    // Fix: No hardcodear
-    private static final int POS_Y = 200;   // Fix: No hardcodear
-
-    private static final int TIEMPO_RESET = 1000;     /* 1000 ms */
-
-    private static final boolean DEBUG = false;
+    private static final int WIDTH = Integer.valueOf(conf("pantalla.width"));
+    private static final int HEIGHT = Integer.valueOf(conf("pantalla.height"));
+    private static final int J1_POS_X = (int) (0.05 * WIDTH);    
+    private static final int J2_POS_X = (int) (0.95 * WIDTH);   
+    private static final int POS_Y = (HEIGHT - Integer.valueOf(conf("pala.altura"))) / 2;
+    private static final int TIEMPO_RESET = Integer.valueOf(conf("tiempo_reset"));
+    private static final boolean DEBUG = Boolean.valueOf(conf("debug"));
 
     private Jugador jugador1;
     private Jugador jugador2;
@@ -74,7 +71,7 @@ public class Game extends BasicGame {
         reset = false;
     }
 
-    public void timer(int delta) {
+    public void timer(int delta) throws SlickException {
         if (reset) {
             timer += delta;
         }
@@ -111,5 +108,4 @@ public class Game extends BasicGame {
         app.setForceExit(false);
         app.start();
     }
-
 }
