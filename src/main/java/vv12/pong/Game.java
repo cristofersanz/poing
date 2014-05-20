@@ -23,12 +23,16 @@ public class Game extends BasicGame {
     private static final int J2_POS_X = WIDTH - 60;    // Fix: No hardcodear
     private static final int POS_Y = 200;   // Fix: No hardcodear
 
+    private static final int TIEMPO_RESET = 1000;     /* 1000 ms */
+
     private static final boolean DEBUG = false;
 
     private Jugador jugador1;
     private Jugador jugador2;
     private Bola bola;
     private Input input;
+    private boolean reset;
+    private int timer;
 
     public Game() {
         super("Pong original!");
@@ -53,32 +57,51 @@ public class Game extends BasicGame {
         jugador2 = new Jugador(J2_POS_X,POS_Y);
         bola = new Bola();
         input = new Input(HEIGHT);
+        timerOn();
     }
 
-    public void reinit() throws InterruptedException {
+    public void reinit(){
         bola = new Bola();
-        Thread.sleep(2000);
+        timerOn();
+    }
+
+    public void timerOn() {
+        timer = 0;
+        reset = true;
+    }
+
+    public void timerOff() {
+        reset = false;
+    }
+
+    public void timer(int delta) {
+        if (reset) {
+            timer += delta;
+        }
+
+        if (timer >= TIEMPO_RESET) {
+            timerOff();
+        }
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
         jugador1.jugar(1,input);
         jugador2.jugar(2,input);
-        try {
-            switch (bola.calcularRebotes(jugador1.getPala(),jugador2.getPala())){
-                case 1:     /* Gana jugador 1 */
-                    jugador1.incrementarPuntuacion();
-                    reinit();
-                    break;
-                case 2:     /* Gana jugador 2 */
-                    jugador2.incrementarPuntuacion();
-                    reinit();
-                    break;
-                default:
-                    break;
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        
+        timer(delta);
+
+        switch (bola.calcularRebotes(jugador1.getPala(),jugador2.getPala(),reset)){
+            case 1:     /* Gana jugador 1 */
+                jugador1.incrementarPuntuacion();
+                reinit();
+                break;
+            case 2:     /* Gana jugador 2 */
+                jugador2.incrementarPuntuacion();
+                reinit();
+                break;
+            default:
+                break;
         }
     }
     
