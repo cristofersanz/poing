@@ -20,10 +20,10 @@ public class Game extends BasicGame {
     private static final int HEIGHT = 600;
     
     private static final int J1_POS_X = 50;    // Fix: No hardcodear
-    private static final int J2_POS_X = 700;    // Fix: No hardcodear
+    private static final int J2_POS_X = WIDTH - 60;    // Fix: No hardcodear
     private static final int POS_Y = 200;   // Fix: No hardcodear
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private Jugador jugador1;
     private Jugador jugador2;
@@ -38,6 +38,8 @@ public class Game extends BasicGame {
         Pantalla.pintarJugador(g,jugador1);
         Pantalla.pintarJugador(g,jugador2);
         Pantalla.pintarBola(g,bola);
+        Pantalla.pintarRed(g);
+        Pantalla.pintarMarcadores(g,jugador1,jugador2);
 
         if (DEBUG){
             g.drawString("X: " + bola.getPosX() + " || Y: " + bola.getPosY() + " || DIR: " +
@@ -53,11 +55,31 @@ public class Game extends BasicGame {
         input = new Input(HEIGHT);
     }
 
+    public void reinit() throws InterruptedException {
+        bola = new Bola();
+        Thread.sleep(2000);
+    }
+
     @Override
     public void update(GameContainer container, int delta) throws SlickException {
         jugador1.jugar(1,input);
         jugador2.jugar(2,input);
-        bola.calcularRebotes(jugador1.getPala(),jugador2.getPala());
+        try {
+            switch (bola.calcularRebotes(jugador1.getPala(),jugador2.getPala())){
+                case 1:     /* Gana jugador 1 */
+                    jugador1.incrementarPuntuacion();
+                    reinit();
+                    break;
+                case 2:     /* Gana jugador 2 */
+                    jugador2.incrementarPuntuacion();
+                    reinit();
+                    break;
+                default:
+                    break;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     
     public static void main(String[] args) throws SlickException {

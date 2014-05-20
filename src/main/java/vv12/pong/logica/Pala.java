@@ -14,7 +14,8 @@ import vv12.pong.graficos.Pantalla;
 public class Pala {
 
 	private static final int ANCHURA = 10;
-	private static final int ALTURA = 100;
+	private static final int ALTURA = 80;
+	private static final int VEL = 10;
 
     private int posX;
     private int posYSup;
@@ -63,15 +64,15 @@ public class Pala {
 
     void subirPala() {
         if (getPosYSup() >= 1){
-            setPosYSup(getPosYSup() - 10);
-            setPosYInf(getPosYInf() - 10);
+            setPosYSup(getPosYSup() - VEL);
+            setPosYInf(getPosYInf() - VEL);
         }
     }
 
     void bajarPala() {
         if (getPosYInf() <= Pantalla.getFilas() - 1) {
-            setPosYSup(getPosYSup() + 10);
-            setPosYInf(getPosYInf() + 10);
+            setPosYSup(getPosYSup() + VEL);
+            setPosYInf(getPosYInf() + VEL);
         }
     }
 }

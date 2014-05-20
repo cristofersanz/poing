@@ -13,11 +13,13 @@ import static vv12.pong.utiles.Utiles.enRango;
 public class Bola {
     public enum Direccion { ARDCHA, ABDCHA, ABIZDA, ARIZDA }
 
-    private static final int RADIO = 10;
+    private static final int RADIO = 12;
+    private static final int VEL = 6;
 
     private int posX;
     private int posY;
     private Direccion dir;
+    private int ang = 1;
 
     public Bola() {
         dir = Direccion.values()[new Random().nextInt(4)];
@@ -34,11 +36,11 @@ public class Bola {
     }
 
     public int getPosXIzda() {
-        return posX;
+        return posX - VEL;
     }
 
     public int getPosXDcha() {
-        return posX + RADIO;
+        return posX + RADIO + VEL;
     }
 
     public void setPosX(int posX) {
@@ -50,11 +52,11 @@ public class Bola {
     }
 
     public int getPosYSup() {
-        return posY;
+        return posY - VEL;
     }
 
     public int getPosYInf() {
-        return posY + RADIO;
+        return posY + RADIO + VEL;
     }
 
     public void setPosY(int posY) {
@@ -74,35 +76,47 @@ public class Bola {
      * en caso de rebotar contra una pared izda o dcha, señala
      * el tanto.
      *
-     * @param palaHumano
-     * @param palaMaquina
+     * @param palaJug1
+     * @param palaJug2
      * @return
      */
-    public int calcularRebotes(Pala palaHumano, Pala palaMaquina) {
+    public int calcularRebotes(Pala palaJug1, Pala palaJug2) {
         /*
             0 - No victoria
-            1 - Punto para humano (gol en maquina)
-            2 - Punto para maquina (gol en humano)
+            1 - Punto para Jug1 (gol en Jug2)
+            2 - Punto para Jug2 (gol en Jug1)
         */
 
         /* Rebotes superior e inferior*/
-        if (getPosYSup() == 1) {
+        if (getPosYSup() <= 1) {
             rebotaArriba();
-        } else if (getPosYInf() == Pantalla.getFilas() - 1) {
+        } else if (getPosYInf() >= Pantalla.getFilas() - 1) {
             rebotaAbajo();
         }
 
         /* Rebotes en palas o goles */
-        if (getPosXIzda() == (palaHumano.getPosX() + palaHumano.getAnchura())) {
-            if (enRango(palaHumano.getPosYSup(), getPosY(), palaHumano.getPosYInf())) {
-                rebotaPalaHumano();
-            } else {    /* Marca gol Maquina -> Humano */
+        if (getPosXIzda() <= (palaJug1.getPosX() + palaJug1.getAnchura())) {
+            if (enRango(palaJug1.getPosYSup(), getPosY(), palaJug1.getPosYInf())) {
+        		if (enRango(palaJug1.getPosYSup(), getPosY(), palaJug1.getPosYSup() + 2) ||
+        			enRango(palaJug1.getPosYInf() - 2, getPosY(), palaJug1.getPosYInf())) {		// Fix: Evitar hardcodear
+        			ang = 2;
+        		} else {
+        			ang = 1;
+        		}
+                rebotaPalaJug1();
+            } else {    /* Marca gol Jug2 -> Jug1 */
                 return 2;
             }
-        } else if (getPosXDcha() == palaMaquina.getPosX() - 1) {
-            if (enRango(palaMaquina.getPosYSup(), getPosY(), palaMaquina.getPosYInf())) {
-                rebotaPalaMaquina();
-            } else {     /* Marca gol Humano -> Maquina */
+        } else if (getPosXDcha() >= palaJug2.getPosX() - 1) {
+            if (enRango(palaJug2.getPosYSup(), getPosY(), palaJug2.getPosYInf())) {
+        		if (enRango(palaJug2.getPosYSup(), getPosY(), palaJug1.getPosYSup() + 2) ||
+        			enRango(palaJug2.getPosYInf() - 2, getPosY(), palaJug1.getPosYInf())) {		// Fix: Evitar hardcodear
+        			ang = 2;
+        		} else {
+        			ang = 1;
+        		}
+                rebotaPalaJug2();
+            } else {     /* Marca gol Jug1 -> Jug2 */
                 return 1;
             }
         }
@@ -131,7 +145,7 @@ public class Bola {
         }
     }
 
-    private void rebotaPalaMaquina() {
+    private void rebotaPalaJug2() {
         switch (getDir()) {
             case ABDCHA:
                 setDir(Direccion.ABIZDA);
@@ -144,7 +158,7 @@ public class Bola {
         }
     }
 
-    private void rebotaPalaHumano() {
+    private void rebotaPalaJug1() {
         switch (getDir()) {
             case ABIZDA:
                 setDir(Direccion.ABDCHA);
@@ -184,22 +198,22 @@ public class Bola {
     }
 
     private void moverABDCHA() {
-        setPosX(getPosX() + 1);
-        setPosY(getPosY() + 1);
+        setPosX(getPosX() + VEL);
+        setPosY(getPosY() + (VEL * ang) / 2);
     }
 
     private void moverABIZDA() {
-        setPosX(getPosX() - 1);
-        setPosY(getPosY() + 1);
+        setPosX(getPosX() - VEL);
+        setPosY(getPosY() + (VEL * ang) / 2);
     }
 
     private void moverARDCHA() {
-        setPosX(getPosX() + 1);
-        setPosY(getPosY() - 1);
+        setPosX(getPosX() + VEL);
+        setPosY(getPosY() - (VEL * ang) / 2);
     }
 
     private void moverARIZDA() {
-        setPosX(getPosX() - 1);
-        setPosY(getPosY() - 1);
+        setPosX(getPosX() - VEL);
+        setPosY(getPosY() - (VEL * ang) / 2);
     }
 }

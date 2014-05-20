@@ -25,6 +25,10 @@ public class Jugador {
         this.puntuacion = puntuacion;
     }
 
+    public void incrementarPuntuacion() {
+        this.puntuacion = this.puntuacion + 1;
+    }
+
     public Pala getPala() {
         return pala;
     }
@@ -37,17 +41,17 @@ public class Jugador {
      */
     public void jugar(int no_jug, Input input) {
         switch (no_jug){
-        	case 1:
-		        if (input.isKeyDown(Input.KEY_UP)){
-		            pala.subirPala();
-		        } else if (input.isKeyDown(Input.KEY_DOWN)) {
-		            pala.bajarPala();
-		        }
-		        break;
-		    case 2:
+		    case 1:
 		        if (input.isKeyDown(Input.KEY_A)){
 		            pala.subirPala();
 		        } else if (input.isKeyDown(Input.KEY_Z)) {
+		            pala.bajarPala();
+		        }
+		        break;
+        	case 2:
+		        if (input.isKeyDown(Input.KEY_UP)){
+		            pala.subirPala();
+		        } else if (input.isKeyDown(Input.KEY_DOWN)) {
 		            pala.bajarPala();
 		        }
 		        break;
