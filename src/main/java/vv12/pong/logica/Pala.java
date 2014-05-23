@@ -9,16 +9,11 @@ package vv12.pong.logica;
 
 import vv12.pong.graficos.Pantalla;
 import static vv12.pong.utiles.Utiles.conf;
+
 /**
  *
  */
 public class Pala {
-
-    private static final int WIDTH = Integer.valueOf(conf("pantalla.width"));
-    private static final int HEIGHT = Integer.valueOf(conf("pantalla.height"));
-	private static final int ANCHURA = Integer.valueOf(conf("pala.anchura"));
-	private static final int ALTURA = Integer.valueOf(conf("pala.altura"));
-	private static final int VEL = Integer.valueOf(conf("pala.velocidad"));
 
     private int posX;
     private int posYSup;
@@ -34,7 +29,7 @@ public class Pala {
 
     public void setPosY(int posY) {
     	setPosYSup(posY);
-    	setPosYInf(posY + ALTURA);
+    	setPosYInf(posY + Integer.valueOf(conf("pala.altura")));
     }
 
     public int getPosYSup() {
@@ -58,24 +53,24 @@ public class Pala {
     }
 
     public int getAnchura(){
-    	return ANCHURA;
+    	return Integer.valueOf(conf("pala.anchura"));
     }
 
     public int getAltura(){
-    	return ALTURA;
+    	return Integer.valueOf(conf("pala.altura"));
     }
 
     void subirPala() {
         if (getPosYSup() >= 1){
-            setPosYSup(getPosYSup() - VEL);
-            setPosYInf(getPosYInf() - VEL);
+            setPosYSup(getPosYSup() - Integer.valueOf(conf("pala.velocidad")));
+            setPosYInf(getPosYInf() - Integer.valueOf(conf("pala.velocidad")));
         }
     }
 
     void bajarPala() {
-        if (getPosYInf() <= HEIGHT - 1) {
-            setPosYSup(getPosYSup() + VEL);
-            setPosYInf(getPosYInf() + VEL);
+        if (getPosYInf() <= Integer.valueOf(conf("pantalla.height")) - 1) {
+            setPosYSup(getPosYSup() + Integer.valueOf(conf("pala.velocidad")));
+            setPosYInf(getPosYInf() + Integer.valueOf(conf("pala.velocidad")));
         }
     }
 }

@@ -1,39 +1,31 @@
 package vv12.pong.logica;
 
-import vv12.pong.graficos.Pantalla;
-import vv12.pong.logica.Pala;
-
 import java.util.Random;
 
-import static vv12.pong.utiles.Utiles.enRango;
 import static vv12.pong.utiles.Utiles.conf;
+import static vv12.pong.utiles.Utiles.enRango;
 
 
 /**
  *
  */
 public class Bola {
-    public enum Direccion { ARDCHA, ABDCHA, ABIZDA, ARIZDA }
-
-    private static final int WIDTH = Integer.valueOf(conf("pantalla.width"));
-    private static final int HEIGHT = Integer.valueOf(conf("pantalla.height"));
-    private static final int RADIO = Integer.valueOf(conf("bola.radio"));
-    private static final int VEL = Integer.valueOf(conf("bola.velocidad"));
-    private static final int MARGEN_EXTRA = Integer.valueOf(conf("pala.margen_extra"));
+    public enum Direccion {ARDCHA, ABDCHA, ABIZDA, ARIZDA}
 
     private int posX;
     private int posY;
     private Direccion dir;
-    private int ang = 1;
+    private int ang;
 
     public Bola() {
+        /* Nueva direccion al aleatoria */
         dir = Direccion.values()[new Random().nextInt(4)];
-        posX = WIDTH / 2;
-        posY = HEIGHT / 2;
+        posX = Integer.valueOf(conf("pantalla.width")) / 2;
+        posY = Integer.valueOf(conf("pantalla.height")) / 2;
     }
 
     public int getRadio() {
-    	return RADIO;
+        return Integer.valueOf(conf("bola.radio"));
     }
 
     public int getPosX() {
@@ -41,11 +33,11 @@ public class Bola {
     }
 
     public int getPosXIzda() {
-        return posX - VEL;
+        return posX - Integer.valueOf(conf("bola.velocidad"));
     }
 
     public int getPosXDcha() {
-        return posX + RADIO + VEL;
+        return posX + Integer.valueOf(conf("bola.radio")) + Integer.valueOf(conf("bola.velocidad"));
     }
 
     public void setPosX(int posX) {
@@ -57,11 +49,12 @@ public class Bola {
     }
 
     public int getPosYSup() {
-        return posY - VEL;
+        return posY - Integer.valueOf(conf("bola.velocidad"));
     }
 
     public int getPosYInf() {
-        return posY + RADIO + VEL;
+        /* Anticipa la posicion al proximo movimiento */
+        return posY + Integer.valueOf(conf("bola.radio")) + Integer.valueOf(conf("bola.velocidad"));
     }
 
     public void setPosY(int posY) {
@@ -76,13 +69,14 @@ public class Bola {
         this.dir = dir;
     }
 
-    public boolean chocaPala(Pala pala) {
-        return enRango(pala.getPosYSup() - MARGEN_EXTRA, getPosY(), pala.getPosYInf() + MARGEN_EXTRA);
+    private boolean chocaPala(Pala pala) {
+        return enRango(pala.getPosYSup() - Integer.valueOf(conf("pala.margen_extra")), getPosY(),
+                pala.getPosYInf() + Integer.valueOf(conf("pala.margen_extra")));
     }
 
-    public boolean chocaEnPunta(Pala pala) {
-        return enRango(pala.getPosYSup() - MARGEN_EXTRA, getPosY(), pala.getPosYSup() + 2) ||
-                enRango(pala.getPosYInf() - 2, getPosY(), pala.getPosYInf() + MARGEN_EXTRA);
+    private boolean chocaEnPunta(Pala pala) {
+        return enRango(pala.getPosYSup() - Integer.valueOf(conf("pala.margen_extra")), getPosY(), pala.getPosYSup() + 2) ||
+                enRango(pala.getPosYInf() - 2, getPosY(), pala.getPosYInf() + Integer.valueOf(conf("pala.margen_extra")));
     }
 
     /**
@@ -94,7 +88,7 @@ public class Bola {
      * @param palaJug2
      * @return
      */
-    public int calcularRebotes(Pala palaJug1, Pala palaJug2, boolean parada) {
+    public int calcularRebotes(Pala palaJug1, Pala palaJug2) {
         /*
             0 - No victoria
             1 - Punto para Jug1 (gol en Jug2)
@@ -102,44 +96,40 @@ public class Bola {
         */
 
         /* Rebotes superior e inferior*/
-        if (!parada) {
-            if (getPosYSup() <= 1) {
-                rebotaArriba();
-            } else if (getPosYInf() >= HEIGHT - 1) {
-                rebotaAbajo();
-            }
+        if (getPosYSup() <= 1) {
+            rebotaArriba();
+        } else if (getPosYInf() >= Integer.valueOf(conf("pantalla.height")) - 1) {
+            rebotaAbajo();
+        }
 
             /* Rebotes en palas o goles */
-            if (getPosXIzda() <= (palaJug1.getPosX() + palaJug1.getAnchura())) {
-                if (chocaPala(palaJug1)) {
-            		if (chocaEnPunta(palaJug1)) {		// Fix: Evitar hardcodear
-            			ang = 2;
-            		} else {
-            			ang = 1;
-            		}
-                    rebotaPalaJug1();
-                } else {    /* Marca gol Jug2 -> Jug1 */
-                    return 2;
+        if (getPosXIzda() <= (palaJug1.getPosX() + palaJug1.getAnchura())) {
+            if (chocaPala(palaJug1)) {
+                if (chocaEnPunta(palaJug1)) {    /* Pica la bola */
+                    ang = 2;
+                } else {
+                    ang = 1;
                 }
-            } else if (getPosXDcha() >= palaJug2.getPosX() - 1) {
-                if (chocaPala(palaJug2)) {
-            		if (chocaEnPunta(palaJug2)) {		// Fix: Evitar hardcodear
-            			ang = 2;
-            		} else {
-            			ang = 1;
-            		}
-                    rebotaPalaJug2();
-                } else {     /* Marca gol Jug1 -> Jug2 */
-                    return 1;
-                }
+                rebotaPalaJug1();
+            } else {    /* Marca gol Jug2 -> Jug1 */
+                return 2;
             }
-
-            /* No hay rebotes */
-            noRebota();
-            return 0;
-        } else {
-            return 0;
+        } else if (getPosXDcha() >= palaJug2.getPosX() - 1) {
+            if (chocaPala(palaJug2)) {
+                if (chocaEnPunta(palaJug2)) {    /* Pica la bola */
+                    ang = 2;
+                } else {
+                    ang = 1;
+                }
+                rebotaPalaJug2();
+            } else {     /* Marca gol Jug1 -> Jug2 */
+                return 1;
+            }
         }
+
+            /* Sólo avanza la bola */
+        noRebota();
+        return 0;
     }
 
     private void noRebota() {
@@ -214,22 +204,22 @@ public class Bola {
     }
 
     private void moverABDCHA() {
-        setPosX(getPosX() + VEL);
-        setPosY(getPosY() + (VEL * ang) / 2);
+        setPosX(getPosX() + Integer.valueOf(conf("bola.velocidad")));
+        setPosY(getPosY() + (Integer.valueOf(conf("bola.velocidad")) * ang) / 2);
     }
 
     private void moverABIZDA() {
-        setPosX(getPosX() - VEL);
-        setPosY(getPosY() + (VEL * ang) / 2);
+        setPosX(getPosX() - Integer.valueOf(conf("bola.velocidad")));
+        setPosY(getPosY() + (Integer.valueOf(conf("bola.velocidad")) * ang) / 2);
     }
 
     private void moverARDCHA() {
-        setPosX(getPosX() + VEL);
-        setPosY(getPosY() - (VEL * ang) / 2);
+        setPosX(getPosX() + Integer.valueOf(conf("bola.velocidad")));
+        setPosY(getPosY() - (Integer.valueOf(conf("bola.velocidad")) * ang) / 2);
     }
 
     private void moverARIZDA() {
-        setPosX(getPosX() - VEL);
-        setPosY(getPosY() - (VEL * ang) / 2);
+        setPosX(getPosX() - Integer.valueOf(conf("bola.velocidad")));
+        setPosY(getPosY() - (Integer.valueOf(conf("bola.velocidad")) * ang) / 2);
     }
 }
