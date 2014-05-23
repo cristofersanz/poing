@@ -15,7 +15,7 @@ public class Bola {
     private int posX;
     private int posY;
     private Direccion dir;
-    private int ang;
+    private int ang = 1;
 
     public Bola() {
         /* Nueva direccion al aleatoria */
