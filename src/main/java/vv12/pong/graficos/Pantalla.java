@@ -1,7 +1,10 @@
 package vv12.pong.graficos;
 
 import org.newdawn.slick.Graphics;
-import vv12.pong.logica.*;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
+import vv12.pong.logica.Bola;
+import vv12.pong.logica.Jugador;
 
 import static vv12.pong.utiles.Utiles.conf;
 
@@ -10,16 +13,9 @@ import static vv12.pong.utiles.Utiles.conf;
  */
 public class Pantalla {
 
-    private static final int WIDTH = Integer.valueOf(conf("pantalla.width"));
-    private static final int HEIGHT = Integer.valueOf(conf("pantalla.height"));
-    private static final int ANCHURA_RED = Integer.valueOf(conf("red.anchura"));
-    private static final float MARCADOR1_POS_X = (WIDTH * 2) / 5;
-    private static final float MARCADOR2_POS_X = (WIDTH * 3) / 5;
-    private static final float MARCADOR_POS_Y = (float) (0.05 * HEIGHT);
-
     public static void pintarJugador(Graphics g, Jugador jugador) {
         g.fillRect(jugador.getPala().getPosX(), jugador.getPala().getPosYSup(),
-            jugador.getPala().getAnchura(), jugador.getPala().getAltura());
+                jugador.getPala().getAnchura(), jugador.getPala().getAltura());
     }
 
     public static void pintarBola(Graphics g, Bola bola) {
@@ -27,11 +23,56 @@ public class Pantalla {
     }
 
     public static void pintarRed(Graphics g) {
-        g.fillRect(WIDTH / 2, 0, ANCHURA_RED, HEIGHT);
+        g.fillRect(Integer.valueOf(conf("pantalla.width")) / 2, 0,
+                Integer.valueOf(conf("red.anchura")), Integer.valueOf(conf("pantalla.height")));
     }
 
     public static void pintarMarcadores(Graphics g, Jugador j1, Jugador j2) {
-        g.drawString(String.valueOf(j1.getPuntuacion()), MARCADOR1_POS_X, MARCADOR_POS_Y);
-        g.drawString(String.valueOf(j2.getPuntuacion()), MARCADOR2_POS_X, MARCADOR_POS_Y);
+        g.drawString(String.valueOf(j1.getPuntuacion()), (Integer.valueOf(conf("pantalla.width")) * 2) / 5,
+                (float) (0.05 * Integer.valueOf(conf("pantalla.height"))));
+        g.drawString(String.valueOf(j2.getPuntuacion()), (Integer.valueOf(conf("pantalla.width")) * 3) / 5,
+                (float) (0.05 * Integer.valueOf(conf("pantalla.height"))));
+    }
+
+    public static void pintarPause(Graphics g) throws SlickException {
+        g.drawImage(new Image("src/main/resources/pause.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+                9 * Integer.valueOf(conf("pantalla.height")) / 20);
+    }
+
+    public static void pintarMenu(Graphics g, int opcionMenu) throws SlickException {
+        switch (opcionMenu) {
+            case 1:
+                g.drawImage(new Image("src/main/resources/nivel_facil.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+                        5 * Integer.valueOf(conf("pantalla.height")) / 12);
+                break;
+
+            case 2:
+                g.drawImage(new Image("src/main/resources/nivel_normal.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+                        5 * Integer.valueOf(conf("pantalla.height")) / 12);
+                break;
+
+            case 3:
+                g.drawImage(new Image("src/main/resources/nivel_dificil.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+                        5 * Integer.valueOf(conf("pantalla.height")) / 12);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void pintarGameOver(Graphics g, int gameOver) throws SlickException {
+        switch (gameOver) {
+            case 1:
+                g.drawImage(new Image("src/main/resources/gameover_1.png"), Integer.valueOf(conf("pantalla.width")) / 4,
+                        5 * Integer.valueOf(conf("pantalla.height")) / 12);
+                break;
+
+            case 2:
+                g.drawImage(new Image("src/main/resources/gameover_2.png"), Integer.valueOf(conf("pantalla.width")) / 4,
+                        5 * Integer.valueOf(conf("pantalla.height")) / 12);
+                break;
+            default:
+                break;
+        }
     }
 }
