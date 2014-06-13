@@ -35,24 +35,24 @@ public class Pantalla {
     }
 
     public static void pintarPause(Graphics g) throws SlickException {
-        g.drawImage(new Image("src/main/resources/pause.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+        g.drawImage(new Image("pause.png"), Integer.valueOf(conf("pantalla.width")) / 3,
                 9 * Integer.valueOf(conf("pantalla.height")) / 20);
     }
 
     public static void pintarMenu(Graphics g, int opcionMenu) throws SlickException {
         switch (opcionMenu) {
             case 1:
-                g.drawImage(new Image("src/main/resources/nivel_facil.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+                g.drawImage(new Image("nivel_facil.png"), Integer.valueOf(conf("pantalla.width")) / 3,
                         5 * Integer.valueOf(conf("pantalla.height")) / 12);
                 break;
 
             case 2:
-                g.drawImage(new Image("src/main/resources/nivel_normal.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+                g.drawImage(new Image("nivel_normal.png"), Integer.valueOf(conf("pantalla.width")) / 3,
                         5 * Integer.valueOf(conf("pantalla.height")) / 12);
                 break;
 
             case 3:
-                g.drawImage(new Image("src/main/resources/nivel_dificil.png"), Integer.valueOf(conf("pantalla.width")) / 3,
+                g.drawImage(new Image("nivel_dificil.png"), Integer.valueOf(conf("pantalla.width")) / 3,
                         5 * Integer.valueOf(conf("pantalla.height")) / 12);
                 break;
             default:
@@ -63,12 +63,12 @@ public class Pantalla {
     public static void pintarGameOver(Graphics g, int gameOver) throws SlickException {
         switch (gameOver) {
             case 1:
-                g.drawImage(new Image("src/main/resources/gameover_1.png"), Integer.valueOf(conf("pantalla.width")) / 4,
+                g.drawImage(new Image("gameover_1.png"), Integer.valueOf(conf("pantalla.width")) / 4,
                         5 * Integer.valueOf(conf("pantalla.height")) / 12);
                 break;
 
             case 2:
-                g.drawImage(new Image("src/main/resources/gameover_2.png"), Integer.valueOf(conf("pantalla.width")) / 4,
+                g.drawImage(new Image("gameover_2.png"), Integer.valueOf(conf("pantalla.width")) / 4,
                         5 * Integer.valueOf(conf("pantalla.height")) / 12);
                 break;
             default:
