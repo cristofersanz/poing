@@ -128,6 +128,7 @@ public class Game extends BasicGame implements KeyListener {
 
     public static void main(String[] args) throws SlickException {
         AppGameContainer app = new AppGameContainer(new Game());
+        app.setVSync(true);
         app.setDisplayMode(Integer.valueOf(conf("pantalla.width")), Integer.valueOf(conf("pantalla.height")), false);
         app.setForceExit(false);
         app.start();
